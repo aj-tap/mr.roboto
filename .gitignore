@@ -1,0 +1,6 @@
+env/
+test.py
+dropbox/
+reports/
+rules/
+.idea/
