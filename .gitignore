@@ -2,5 +2,6 @@ env/
 test.py
 dropbox/
 reports/
-rules/
+rules-test/
 .idea/
+
