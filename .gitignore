@@ -1,7 +1,5 @@
+venv/
 env/
-test.py
 dropbox/
-reports/
-rules-test/
 .idea/
-
+saved_specimens/
