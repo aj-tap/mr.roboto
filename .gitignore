@@ -3,3 +3,5 @@ env/
 dropbox/
 .idea/
 saved_specimens/
+analysis.pkl
+scripts/__pycache__
