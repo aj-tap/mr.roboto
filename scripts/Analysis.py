@@ -36,11 +36,50 @@ class StaticAnalysis:
                 self.specimens_table.at[i, 'sha1'] = hashlib.sha1(bytes_of_file).hexdigest()
                 self.specimens_table.at[i, 'sha256'] = hashlib.sha256(bytes_of_file).hexdigest()
 
+    def getStrings(self, length=8):
+        for i in range(self.specimens_table.shape[0]):
+            filename = os.path.join(self.specimens_table.at[i, 'Dir_Path'], self.specimens_table.at[i, 'File_Name'])
+            output_file = os.path.join(self.specimens_table.at[i, 'Dir_Path'], "strings.txt")
+            cmd = "flarestrings -n " + str(length) + " " + filename + " | rank_strings --scores > " + output_file
+            try:
+                os.system(cmd)
+                print("Pulling strings " + filename)
+            except ValueError as e:
+                print(e)
+
+    def getCapaResult(self):
+        for i in range(self.specimens_table.shape[0]):
+            filename = os.path.join(self.specimens_table.at[i, 'Dir_Path'], self.specimens_table.at[i, 'File_Name'])
+            output_file = os.path.join(self.specimens_table.at[i, 'Dir_Path'], "capa-result.txt")
+            capa_location = os.path.join(os.getcwd(), "util")
+            capa_location = os.path.join(capa_location, "capa")
+            print("capa for sample: " + filename)
+            # cmd = "." + capa_location + " " + filename + " >" + output_file
+            cmd = "./util/capa " + filename + " >" + output_file
+            os.system(cmd)
+
     def execute(self):
+        print("------------------\n")
+        print("Enumerating Samples\n")
         self.enumerateSamples()
+        print("------------------\n")
+        print("Getting hashes\n")
+        print("------------------\n")
         self.getHashes()
-        #  print(self.samples_table)
-        print(self.specimens_table[['File_Name', 'sha256']].to_string(index=False))
+        # Print samples
+        # print(self.specimens_table[['File_Name', 'sha256']].to_string(index=False))
+        print("------------------\n")
+        print("Pulling Strings")
+        print("------------------\n")
+        self.getStrings()
+        print("------------------\n")
+        print("Calling Capa")
+        print("------------------\n")
+        self.getCapaResult()
+        print("------------------\n")
+        print("Saving result in pkl")
+        if os.path.isfile("analysis.pkl"):
+            os.remove("analysis.pkl")
         self.specimens_table.to_pickle("analysis.pkl")
 
 
@@ -108,20 +147,19 @@ class Osint:
             with vt.Virustotal(self.vt_api) as virus_total:
                 try:
                     resp = virus_total.request(f"files/{file_hash}")
+                    print("--------------------------\n Generating VT report for Sample: " + file_hash)
                     print(resp.data["attributes"]["meaningful_name"])
-                    print(resp.data["attributes"]["detectiteasy"]["filetype"])
+                    # print(resp.data["attributes"]["detectiteasy"]["filetype"])
                     print(resp.data["attributes"]["total_votes"])
                     print(resp.data["links"]["self"])
                     filename = 'VT_Report_' + file_hash + '.json'
+                    if not os.path.exists(output_path):
+                        os.makedirs(output_path)
+                    with open(os.path.join(output_path, filename), 'w') as temp_file:
+                        temp_file.write(json.dumps(resp.data, sort_keys=True, indent=4))
                 except Exception as e:
                     print(e)
                     pass
-
-                # To be refactored
-                if not os.path.exists(output_path):
-                    os.makedirs(output_path)
-                with open(os.path.join(output_path, filename), 'w') as temp_file:
-                    temp_file.write(json.dumps(resp.data, sort_keys=True, indent=4))
 
     def execute(self):
         self.getVTreport()
