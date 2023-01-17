@@ -1,7 +1,7 @@
 # Mr Roboto
-Python scripts that skips all repetitive malware analysis tasks.
+Python scripts that skips repetitive malware analysis tasks.
 
-![](https://github.com/aj-tap/mr.roboto/blob/main/demo-roboto.GIF)
+[![asciicast](https://asciinema.org/a/FtpjDaCq0JAvxB6EY4Rj8aGK1.svg)](https://asciinema.org/a/FtpjDaCq0JAvxB6EY4Rj8aGK1)
 
 #### Features:
 - [ x ] Extracts bulk zip password-protected samples.
@@ -16,8 +16,9 @@ Python scripts that skips all repetitive malware analysis tasks.
 
 ---
 ## Usage
+Extracts bulk zip samples with standard "infected" password and pull strings, Capa results and VT search query.
 ```
-python3 main.py -e -f <samples-files> -o <saved-specimens> -vt <vt-key>
+python3 main.py --unzip -f <samples-files> -o <saved-specimens> -vt <vt-key>
 ```
 ---
 

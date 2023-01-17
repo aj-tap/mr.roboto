@@ -10,7 +10,7 @@ import os
 class StaticAnalysis:
     def __init__(self, sample_path):
         #  self.output_path = output_path
-        self.sample_path = sample_path
+        self.sample_path = str(sample_path)
         self.specimens_table = pd.DataFrame.from_dict({
             'File_Name': [],
             'md5': [],
@@ -67,7 +67,7 @@ class StaticAnalysis:
         print("------------------\n")
         self.getHashes()
         # Print samples
-        # print(self.specimens_table[['File_Name', 'sha256']].to_string(index=False))
+        print(self.specimens_table[['File_Name', 'sha256']].to_string(index=False))
         print("------------------\n")
         print("Pulling Strings")
         print("------------------\n")

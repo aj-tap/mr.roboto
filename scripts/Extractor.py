@@ -9,8 +9,8 @@ import pandas as pd
 
 class ProcessSamples:
     def __init__(self, sample_path, output_path):
-        self.sample_path = sample_path
-        self.output_path = output_path
+        self.sample_path = str(sample_path)
+        self.output_path = str(output_path)
         self.zip_files_pwd = "infected"
         self.data = pd.DataFrame.from_dict({
             'File_name': [],
@@ -30,9 +30,9 @@ class ProcessSamples:
             shutil.rmtree(self.output_path)
         for dirPath, dirNames, fileNames in os.walk(self.sample_path):
             for f in fileNames:
-                path = os.path.join(self.output_path, f)
+                path = os.path.join(self.output_path, f.removesuffix(".zip"))
                 current_file = os.path.join(dirPath, f)
-                os.makedirs(path)
+                #os.makedirs(path)
                 if f.endswith(".zip"):
                     with pyzipper.AESZipFile(current_file, 'r', compression=pyzipper.ZIP_DEFLATED,
                                              encryption=pyzipper.WZ_AES) as zp:
